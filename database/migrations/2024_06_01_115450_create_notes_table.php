@@ -12,11 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('notes', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
+            $table->integer('user_id')->index('user_id');
+            $table->string('name')->default('MyNotes');
+            $table->text('description')->nullable();
+            $table->text('content');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('notes');
     }
 };
