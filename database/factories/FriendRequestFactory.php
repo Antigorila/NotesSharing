@@ -17,7 +17,8 @@ class FriendRequestFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => rand(1, 10),
+            'from_user_id' => rand(1, 10),
         ];
     }
 }
