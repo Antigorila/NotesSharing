@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\FriendRequest;
 use App\Http\Requests\StoreFriendRequestRequest;
 use App\Http\Requests\UpdateFriendRequestRequest;
+use App\Models\Friend;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+use function PHPUnit\Framework\isNull;
 
 class FriendRequestController extends Controller
 {
@@ -13,7 +18,7 @@ class FriendRequestController extends Controller
      */
     public function index()
     {
-        //
+        return view('friend_requests.index', ['user' => Auth::user()]);
     }
 
     /**
@@ -21,7 +26,7 @@ class FriendRequestController extends Controller
      */
     public function create()
     {
-        //
+        return view('friend_requests.create', ['user' => Auth::user()]);
     }
 
     /**
@@ -29,7 +34,26 @@ class FriendRequestController extends Controller
      */
     public function store(StoreFriendRequestRequest $request)
     {
-        //
+        $friend = User::where('email', $request->input('email'))->first();
+        if ($friend !== null) 
+        {
+            FriendRequest::create([
+                'user_id' => $friend->id,
+                'from_user_id' => Auth::user()->id
+            ]);
+
+            return back();
+        } 
+        else 
+        {
+            return back();
+        }
+    }
+
+
+    public function accept(FriendRequest $friendRequest)
+    {
+        Friend::create([]);
     }
 
     /**
@@ -61,6 +85,7 @@ class FriendRequestController extends Controller
      */
     public function destroy(FriendRequest $friendRequest)
     {
-        //
+        $friendRequest->delete();
+        return back();
     }
 }

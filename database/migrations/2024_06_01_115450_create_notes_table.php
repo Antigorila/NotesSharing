@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('user_id')->index('user_id');
             $table->string('name')->default('MyNotes');
             $table->text('description')->nullable();
+            $table->integer('views')->default(0);
             $table->text('content');
             $table->softDeletes();
             $table->timestamps();

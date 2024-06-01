@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Friend;
 use App\Http\Requests\StoreFriendRequest;
 use App\Http\Requests\UpdateFriendRequest;
+use Illuminate\Support\Facades\Auth;
 
 class FriendController extends Controller
 {
@@ -13,7 +14,7 @@ class FriendController extends Controller
      */
     public function index()
     {
-        //
+        return view('friends.index', ['user' => Auth::user()]);
     }
 
     /**
@@ -61,6 +62,7 @@ class FriendController extends Controller
      */
     public function destroy(Friend $friend)
     {
-        //
+        $friend->delete();
+        return back();
     }
 }

@@ -15,8 +15,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    if (Auth::check())
+    {
+        return view('home');
+    }
+    else
+    {
+        return view('welcome');
+    }
+});
+
+Route::get('/welcome', function () {
     return view('welcome');
 });
+
 
 Auth::routes();
 
@@ -26,3 +38,7 @@ Route::resource('notes', App\Http\Controllers\NoteController::class);
 Route::resource('friends', App\Http\Controllers\FriendController::class);
 Route::resource('friend_requests', App\Http\Controllers\FriendRequestController::class);
 Route::resource('join_requests', App\Http\Controllers\JoinRequestController::class);
+
+Route::post('/accept', [App\Http\Controllers\JoinRequestController::class, 'accept']);
+Route::get('/notes/inspect/{user}', [App\Http\Controllers\NoteController::class, 'inspect'])->name('notes.inspect');
+

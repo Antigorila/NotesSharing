@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\JoinRequest;
 use App\Http\Requests\StoreJoinRequestRequest;
 use App\Http\Requests\UpdateJoinRequestRequest;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class JoinRequestController extends Controller
 {
@@ -13,7 +15,7 @@ class JoinRequestController extends Controller
      */
     public function index()
     {
-        //
+        return view('join_requests.index', ['join_requests' => JoinRequest::all()]);
     }
 
     /**
@@ -29,7 +31,36 @@ class JoinRequestController extends Controller
      */
     public function store(StoreJoinRequestRequest $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'password' => 'required|string',
+        ]);
+
+        JoinRequest::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+        ]);
+
+        return view('welcome');
+    }
+
+    public function accept(StoreJoinRequestRequest $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'password' => 'required|string',
+        ]);
+
+        User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+        ]);
+
+        return view('welcome');
     }
 
     /**
@@ -37,7 +68,7 @@ class JoinRequestController extends Controller
      */
     public function show(JoinRequest $joinRequest)
     {
-        //
+        return view('join_requests.show', ['join_request' => $joinRequest]);
     }
 
     /**
@@ -61,6 +92,7 @@ class JoinRequestController extends Controller
      */
     public function destroy(JoinRequest $joinRequest)
     {
-        //
+        $joinRequest->delete();
+        return back();
     }
 }

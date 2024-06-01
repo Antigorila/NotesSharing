@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>NotesSharing</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -16,13 +16,19 @@
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
-<body>
+<body style="background-color:grey">
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
+                @if(Auth::check())
+                    <a class="navbar-brand" href="{{ url('/') }}">
+                        NotesSharing
+                    </a>
+                @else
+                    <a class="navbar-brand">
+                        NotesSharing
+                    </a>
+                @endif
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -55,15 +61,14 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
+                                    
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>                                    
                                 </div>
                             </li>
                         @endguest
@@ -72,9 +77,46 @@
             </div>
         </nav>
 
-        <main class="py-4">
+        <div class="d-flex">
+        @if (Auth::check())
+        <div class="col-2 p-1 pt-4">
+            <div class="text-white bg-dark card p-2">
+                <hr>
+                    <div class="card m-2">
+                        <a class="btn btn-dark col-12" href="{{ route('notes.index') }}">Notes</a>
+                    </div>
+                    <div class="card m-2">
+                        <a class="btn btn-dark col-12" href="{{ route('friends.index') }}">Friends</a>
+                    </div>
+                    <div class="card m-2">
+                        <a class="btn btn-dark col-12 p-2" href="{{ route('friend_requests.index') }}">Friend Requests</a>  
+                    </div>
+                    @if(Auth::user()->id === 1)
+                    <div class="card m-2">
+                        <a class="btn btn-warning col-12 p-2" href="#">Users</a>  
+                    </div>
+                    <div class="card m-2">
+                        <a class="btn btn-warning col-12 p-2" href="{{ route('join_requests.index') }}">Join Requests</a>  
+                    </div>
+                    @endif
+                <hr>
+                <div class="card m-2 mb-0">
+                    <div class="card-body text-center">
+                        <div class="mt-3 mb-4">
+                            <img src="{{ asset('storage/default_profile.png') }}" class="rounded-circle img-fluid" style="width: 100px;">
+                        </div>
+                        <h4 class="mb-2">{{ Auth::user()->name }}</h4>
+                        <p>{{ Auth::user()->email }}</p>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+        @endif
+        <main class="py-4 flex-grow-1">
             @yield('content')
-        </main>
+        </main>  
+        </div>        
     </div>
 </body>
 </html>
