@@ -93,7 +93,7 @@
                     </div>
                     @if(Auth::user()->id === 1)
                     <div class="card m-2">
-                        <a class="btn btn-warning col-12 p-2" href="#">Users</a>  
+                        <a class="btn btn-warning col-12 p-2" href="{{ route('users.index') }}">Users</a>  
                     </div>
                     <div class="card m-2">
                         <a class="btn btn-warning col-12 p-2" href="{{ route('join_requests.index') }}">Join Requests</a>  

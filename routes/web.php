@@ -38,7 +38,12 @@ Route::resource('notes', App\Http\Controllers\NoteController::class);
 Route::resource('friends', App\Http\Controllers\FriendController::class);
 Route::resource('friend_requests', App\Http\Controllers\FriendRequestController::class);
 Route::resource('join_requests', App\Http\Controllers\JoinRequestController::class);
+Route::resource('users', App\Http\Controllers\UserController::class);
 
-Route::post('/accept', [App\Http\Controllers\JoinRequestController::class, 'accept']);
 Route::get('/notes/inspect/{user}', [App\Http\Controllers\NoteController::class, 'inspect'])->name('notes.inspect');
 
+Route::post('/friend_requests/accept/{friendRequest}', [App\Http\Controllers\FriendRequestController::class, 'accept'])->name('friend_requests.accept');
+Route::post('/friend_requests/decline/{friendRequest}', [App\Http\Controllers\FriendRequestController::class, 'decline'])->name('friend_requests.decline');
+
+Route::post('/join_requests/accept/{joinRequest}', [App\Http\Controllers\JoinRequestController::class, 'accept'])->name('join_requests.accept');
+Route::post('/join_requests/decline/{joinRequest}', [App\Http\Controllers\JoinRequestController::class, 'decline'])->name('join_requests.decline');

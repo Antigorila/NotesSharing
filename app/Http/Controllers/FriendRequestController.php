@@ -35,14 +35,29 @@ class FriendRequestController extends Controller
     public function store(StoreFriendRequestRequest $request)
     {
         $friend = User::where('email', $request->input('email'))->first();
+
         if ($friend !== null) 
         {
+            $userId = Auth::user()->id;
+
+            $existingFriendship = Friend::where(function ($query) use ($userId, $friend) {
+                $query->where('user_id', $userId)
+                      ->where('friend_id', $friend->id);
+            })->orWhere(function ($query) use ($userId, $friend) {
+                $query->where('user_id', $friend->id)
+                      ->where('friend_id', $userId);
+            })->exists();
+
+            if ($existingFriendship) {
+                return back();
+            }
+
             FriendRequest::create([
                 'user_id' => $friend->id,
-                'from_user_id' => Auth::user()->id
+                'from_user_id' => $userId
             ]);
 
-            return back();
+            return view('friends.index', ['user' => Auth::user()]);
         } 
         else 
         {
@@ -53,7 +68,19 @@ class FriendRequestController extends Controller
 
     public function accept(FriendRequest $friendRequest)
     {
-        Friend::create([]);
+        $friend = Friend::create([
+            'user_id' => $friendRequest->user_id,
+            'friend_id' => $friendRequest->from_user_id
+        ]);
+        
+        $friendRequest->delete();
+        return view('friend_requests.index');
+    }
+
+    public function decline(FriendRequest $friendRequest)
+    {
+        $friendRequest->delete();
+        return view('friend_requests.index');
     }
 
     /**

@@ -46,21 +46,22 @@ class JoinRequestController extends Controller
         return view('welcome');
     }
 
-    public function accept(StoreJoinRequestRequest $request)
+    public function accept(JoinRequest $joinRequest)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255',
-            'password' => 'required|string',
-        ]);
-
         User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
+            'name' => $joinRequest->name,
+            'email' => $joinRequest->email,
+            'password' => $joinRequest->password
         ]);
 
-        return view('welcome');
+        $joinRequest->delete();
+        return view('join_requests.index');
+    }
+
+    public function decline(JoinRequest $joinRequest)
+    {
+        $joinRequest->delete();
+        return view('join_requests.index');
     }
 
     /**
@@ -68,7 +69,7 @@ class JoinRequestController extends Controller
      */
     public function show(JoinRequest $joinRequest)
     {
-        return view('join_requests.show', ['join_request' => $joinRequest]);
+        //
     }
 
     /**
